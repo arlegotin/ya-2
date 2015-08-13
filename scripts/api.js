@@ -121,15 +121,14 @@ function getData(url, callback) {
     var processor = function ( all_requests, current_request, error, responses, result ) {
         var responces_length = 0,
             response_key,
-            location_name,
-            is_country,
-            is_city,
             all_requests_length = all_requests.length;
             
         responses[ current_request ] = result;
         
         for ( response_key in responses ) {
-            responces_length++;
+            if ( responses.hasOwnProperty( response_key ) === true ) {
+                responces_length++;
+            }
         }
         
         if ( responces_length === all_requests_length ) {
