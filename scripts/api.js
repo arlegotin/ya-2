@@ -145,13 +145,13 @@ function getData(url, callback) {
     };
     
     var sendAllRequests = function( all_requests ) {
-    	var requests_length = all_requests.length,
-    		responses = {},
-    		i;
+        var requests_length = all_requests.length,
+            responses = {},
+            i;
     
-    	for ( i = 0; i < requests_length; i++ ) {
-    	   sendRequest( all_requests, requests[ i ], responses, processor );
-    	}
+        for ( i = 0; i < requests_length; i++ ) {
+           sendRequest( all_requests, requests[ i ], responses, processor );
+        }
     };
     
     sendAllRequests( requests );
