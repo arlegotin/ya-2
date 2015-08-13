@@ -47,10 +47,7 @@ function getData(url, callback) {
  
 ( function( window, document, getData ) {
     var requests = [ '/countries', '/cities', '/populations' ],
-        requests_length = requests.length,
-        responses = {},
-        processed_continent = 'Africa',
-        i;
+        processed_continent = 'Africa';
         
     var countPopulation = function( data, in_location ) {
         var result_countries = [],
@@ -121,31 +118,42 @@ function getData(url, callback) {
         console.log( 'Total population of %s: %d', in_location || processed_continent, total_population );
     };
         
-    var callback = function ( request, error, result ) {
-        var length = 0,
+    var processor = function ( all_requests, current_request, error, responses, result ) {
+        var responces_length = 0,
             response_key,
             location_name,
             is_country,
-            is_city;
+            is_city,
+            all_requests_length = all_requests.length;
             
-        responses[ request ] = result;
+        responses[ current_request ] = result;
         
         for ( response_key in responses ) {
-            length++;
+            responces_length++;
         }
         
-        if ( length === requests_length ) {
+        if ( responces_length === all_requests_length ) {
             countPopulation( responses );
             
             countPopulation( responses, window.prompt( 'Enter country or city of ' + processed_continent, 'Tanzania' ) );
         }
     };
     
-    for ( i = 0; i < requests_length; i++ ) {
-        ( function( request ) {
-            getData( request, function( error, result ) {
-                callback( request, error, result );
-            } );
-        } )( requests[ i ] )
-    }
+    var sendRequest = function( all_requests, current_request, responses, callback ) {
+        getData( current_request, function( error, result ) {
+            callback( all_requests, current_request, error, responses, result );
+        } );
+    };
+    
+    var sendAllRequests = function( all_requests ) {
+    	var requests_length = all_requests.length,
+    		responses = {},
+    		i;
+    
+    	for ( i = 0; i < requests_length; i++ ) {
+    	   sendRequest( all_requests, requests[ i ], responses, processor );
+    	}
+    };
+    
+    sendAllRequests( requests );
 } )( window, document, window.getData );
